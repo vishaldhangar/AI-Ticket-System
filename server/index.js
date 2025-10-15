@@ -2,12 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import route from './routes/user.js';
 
 dotenv.config();
 
 const app=express();
 app.use(express.json());
-app.use(cors());
+app.use(cors()); 
+
 
 const PORT=process.env.PORT || 4000;
 const MONGO=process.env.MONGO_URI;
@@ -25,4 +27,5 @@ const connectDB=async()=>{
     }
 }
 
+app.use('/api/auth',route)
 connectDB();
