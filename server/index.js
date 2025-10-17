@@ -3,12 +3,25 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import route from './routes/user.js';
+import ticketRoutes from "./routes/ticket.js";
+import { inngest } from "./inngest/client.js";
+import { onSignup } from "./inngest/functions/on-signup.js";
+import { onTicketCreated } from "./inngest/functions/on-ticket-create.js";
+import { serve } from "inngest/express";
 
 dotenv.config();
 
 const app=express();
 app.use(express.json());
 app.use(cors()); 
+
+app.use(
+  "/api/inngest",
+  serve({
+    client: inngest,
+    functions: [onSignup, onTicketCreated],
+  })
+);
 
 
 const PORT=process.env.PORT || 4000;
@@ -28,4 +41,6 @@ const connectDB=async()=>{
 }
 
 app.use('/api/auth',route)
+app.use("/api/tickets", ticketRoutes);
+
 connectDB();
